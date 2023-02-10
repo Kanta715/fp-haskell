@@ -1,6 +1,9 @@
 module Main (main) where
 
-import Lib
+import Baby
 
 main :: IO ()
-main = someFunc
+main =
+  do
+    x <- getLine
+    printLine (baby x)
