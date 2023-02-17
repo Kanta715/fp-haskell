@@ -28,6 +28,7 @@ library
       Baby
       Lib
       List.List
+      Tuple.Tuple
   other-modules:
       Paths_fp_haskell
   hs-source-dirs:
