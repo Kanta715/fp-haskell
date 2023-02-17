@@ -27,6 +27,7 @@ library
   exposed-modules:
       Baby
       Lib
+      List.List
   other-modules:
       Paths_fp_haskell
   hs-source-dirs:
