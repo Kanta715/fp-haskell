@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Baby
+      BMI
       Lib
       List.List
       Tuple.Tuple
