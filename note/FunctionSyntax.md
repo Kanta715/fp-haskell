@@ -50,7 +50,7 @@ ghci> firstLetter "AIUEO"
 "The first letter of AIUEO is A"
 ```
 
-### ガード
+### ガード、where、let in, case
 パイプで区切る<br>
 otherwise で全てをキャッチする<br>
 = がいきなりなくなる<br>
@@ -78,4 +78,27 @@ bmi weight height
   where num = weight / height ^ 2
 ghci> bmi 72 1.72
 "futsu"
+
+-- let
+-- 構文: let [bindings] in [expression]
+-- let は where とは似ているが先に束縛をして、後に式を書く
+-- let はローカルスコープに関数を作ったりもできる
+-- let は式であり局所的なため、、ガードを跨いで使うことができない
+cylinder :: Double -> Double -> Double
+cylinder r h =
+  let sideArea = 2 * pi * r * h
+      topArea = pi * r ^ 2
+  in sideArea + 2 * topArea
+
+calcBmisOfLet :: [(Double, Double)] -> [Double]
+calcBmisOfLet xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2]
+ghci> calcBmisOfLet [(72.0, 1.72)]
+[24.337479718766904]
+
+-- case
+-- 構文: case [expression] of pattern -> result
+--                           pattern -> result
+--                             ⋮
+-- 変数の指定した対する処理を定義できる & パターンマッチが使える
+-- パターンが見つからない場合はエラーを吐く
 ```
