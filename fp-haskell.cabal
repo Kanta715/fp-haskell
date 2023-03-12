@@ -29,6 +29,7 @@ library
       BMI
       Lib
       List.List
+      Recursive
       Tuple.Tuple
   other-modules:
       Paths_fp_haskell
