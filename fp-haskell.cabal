@@ -27,6 +27,7 @@ library
   exposed-modules:
       Baby
       BMI
+      Curry
       Lib
       List.List
       Recursive
