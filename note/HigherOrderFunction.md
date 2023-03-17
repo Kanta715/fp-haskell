@@ -34,4 +34,56 @@ ghci> moreThan10
 -- マイナスは無理らしい
 divideByTen :: (Floating a) => a -> a
 divideByTen =  (/10)
+
+-- 関数と値を取る関数
+applyTwice :: (a -> a) -> a -> a
+applyTwice f x = f (f x)
+
+plusTen :: Int -> Int
+plusTen x = x + 10
+
+ghci> applyTwice plusTen 10
+30
+
+-- 部分適用
+ghci> let plusTwenty = applyTwice plusTen
+ghci> plusTwenty 10
+30
+
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ [] _          = []
+zipWith' _ _ []          = []
+zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
+
+numberTheItem :: Int -> String -> String
+numberTheItem int str = (show int) ++ ". " ++ str
+
+ghci> let ints :: [Int] = [1,2,3,4,5]
+ghci> let strs = ["Red", "Blue", "Green", "Yellow", "White", "Black", "Orange"]
+ghci> zipWith' numberTheItem ints strs
+["1. Red","2. Blue","3. Green","4. Yellow","5. White"]
+
+flip' :: (a -> b -> c) -> (b -> a -> c)
+flip' f x y = f y x
+ghci> let fliped = flip' numberTheItem
+ghci> :t fliped
+fliped :: String -> Int -> String
+
+-- 関数リストを作る
+listOfFunc :: [String] -> [(String -> String)]
+listOfFunc []   = []
+listOfFunc list = [combinationNumber str | str <- list]
+
+combinationNumber :: String -> String -> String
+combinationNumber str str2
+  | length str <= 5  = "1. " ++ str ++ str2
+  | length str <= 10 = "2. " ++ str ++ str2
+  | length str <= 15 = "3. " ++ str ++ str2
+  | otherwise        = "0. " ++ str ++ str2
+
+ghci> let funcList = listOfFunc ["AAAAAAA", "B", "CCCC", "DDDDDDDDDDDDDDDDDD", "EE", "FFF"]
+ghci> :t funcList
+funcList :: [String -> String]
+ghci> [func "  OK" | func <- funcList]
+["2. AAAAAAA  OK","1. B  OK","1. CCCC  OK","0. DDDDDDDDDDDDDDDDDD  OK","1. EE  OK","1. FFF  OK"]
 ```
