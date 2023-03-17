@@ -99,3 +99,32 @@ ghci> [func "  OK" | func <- funcList]
 ghci> zipWith' (\a b -> (a * 30 + 3) / b) [5,4,3,2,1] [1,2,3,4,5]
 [153.0,61.5,31.0,15.75,6.6]
 ```
+
+### 畳み込み
+畳み込みは Scala でもやってるので理解はしているつもり<br>
+「2引数関数」「アキュームレータ（初期値）」「畳み込み対象のリスト」の3つの引数を取る
+haskell では foldl, foldr を使う
+```haskell
+-- foldl
+-- 引数: 初期値とリストの先頭の値を受け取って処理をする関数、初期値、リスト
+ghci> :t foldl -- 左畳み込み
+foldl :: Foldable t => (b -> a -> b) -> b -> t a -> b
+sum' :: (Num a) => [a] -> a
+sum' xs = foldl (\acc x -> acc + x) 0 xs
+ghci> sum' [1,2,3,4,5]
+15
+
+-- 同じ
+ghci> sum2' :: (Num a) => [a] -> a; sum2' xs = foldl (+) 0 xs
+ghci> sum2' [1,2,3,4,5]
+15
+
+ghci> :t foldr -- 右畳み込み
+foldr :: Foldable t => (a -> b -> b) -> b -> t a -> b
+-- リストの末尾から値を適用していく（foldlの逆）
+-- 走査自体は左からしかできないが、右から走査しているように振る舞う
+combination' :: [String] -> String;
+combination' xs = foldr (\x acc -> acc ++ x) "" xs
+ghci> combination' ["A", "B", "C", "D", "E", "F", "G"]
+"GFEDCBA"
+```
