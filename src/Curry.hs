@@ -4,7 +4,8 @@ module Curry(
   applyTwice,
   zipWith',
   flip',
-  listOfFunc
+  listOfFunc,
+  reverse'
 ) where
 
 compareWith10 :: (Ord a, Num a) => [a] -> [a]
@@ -36,3 +37,6 @@ combinationNumber str str2
   | length str <= 10 = "2. " ++ str ++ str2
   | length str <= 15 = "3. " ++ str ++ str2
   | otherwise        = "0. " ++ str ++ str2
+
+reverse' :: [a] -> [a]
+reverse' = foldl (\acc x -> x : acc) []
