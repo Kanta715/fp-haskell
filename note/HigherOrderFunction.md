@@ -178,3 +178,47 @@ ghci> sum (filter (> 10) (map (*2) [1..10]))
 ghci> sum $ filter (> 10) $ map (*2) [1..10]
 80
 ```
+
+### 関数合成
+**関数合成** = 2つの関数を合成したものは、まず1つの関数を呼び出し、それからもう1つの関数にその結果を渡して呼び出したもの<br>
+Haskell では `.` 関数を用いて関数を合成する。
+```haskell
+ghci> :t (.)
+(.) :: (b -> c) -> (a -> b) -> a -> c
+
+plus100 :: Int -> Int
+plus100 x = x + 100
+
+minus10 :: Int -> Int
+minus10 x = x - 10
+
+-- 関数合成
+ghci> let plus90 =  minus10 . plus100
+ghci> plus90 200
+290
+
+intToString :: Int -> String
+intToString x = show x
+
+-- 関数合成
+ghci> let plus100String = intToString . plus100
+ghci> plus100String 100
+"200"
+
+-- 配列に対してやりたいことが多い場合、ラムダ式で書くと以下のようになる
+-- () が多く読み辛い
+ghci> let ints = [-5,-6,-7,-8,20,30]
+ghci> map (\x -> negate (abs (x * 3))) ints
+[-15,-18,-21,-24,-60,-90]
+
+-- 関数合成をした場合は、もっとスッキリ書ける
+ghci> map (negate . abs . (*3)) ints
+[-15,-18,-21,-24,-60,-90]
+
+-- 多引数関数の関数合成
+-- 部分適用して1だけ引数を受け取るようにする
+sum (replicate 5 (max 5 6))
+-- 以下のように書ける
+(sum . replicate 5) (max 5 6)
+sum . replicate 5 $ max 5 6
+```
