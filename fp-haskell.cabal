@@ -30,6 +30,7 @@ library
       Curry
       Lib
       List.List
+      OriginalType
       Recursive
       Tuple.Tuple
   other-modules:
