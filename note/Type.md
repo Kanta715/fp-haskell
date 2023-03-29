@@ -201,7 +201,7 @@ ghci> age person
 Age 28
 ```
 
-## 型引数
+### 型引数
 以下は公式の `Maybe` の定義<br>
 `Maybe` は型引数``a``を取り、`Nothing` or `Just a` として返す。`Maybe` 自体は、**型** ではなく、**型コンストラクタ** である。何らかしらの型を引数として受け取り、それに応じて `Maybe x` という型を作る。 
 そのため、単なる `Maybe` 型は存在しない。<br>
@@ -213,12 +213,17 @@ A. データ型自体の動作にそこまで影響を与えずに、データ�
      - Id
      - Name
      - Age
+     - `data User = User Id Name Age deriving (Show)`
      - こういった具体的な型ややりたい処理が決まっているものは、汎用的な箱として扱うよりも、独自の働きをする型として使用する
  - それに対して、`Maybe`, `List`, `Map` などは何らかの型の値が与えられ、その時作成されたデータ型を便利な箱として汎用的な処理をしたい時に使用する。
 <br>
  
 ちなみに、Haskell ではデータ宣言には型クラス制限をつけないというコーディング規約がある。<br>
-やりたいことがある場合は、関数実装時に型制約するからデータ宣言で制限入れてもメリットが少ないかららしい。
+やりたいことがある場合は、関数実装時に型制約するからデータ宣言で制限入れてもメリットが少ないかららしい。<br>
+
+値コンストラクタ：値を引数として取り、独自のデータ型のインスタンスを生成する関数<br>
+型コンストラクタ：多相型を実現するもの<br>
+`data 型コンストラクタ = 値コンストラクタ`
 ```haskell
 data  Maybe a  =  Nothing | Just a
 
@@ -238,4 +243,70 @@ ghci> :t IntNothing
 IntNothing :: IntMaybe
 ghci> :t IntJust
 IntJust :: Int -> IntMaybe
+
+-- 型引数を2つ取る E 型は、L, R という値コンストラクタを持つ
+-- l 型の引数を取った場合は、L 型のインスタンスを返す
+-- r 型の引数を取った場合は、R 型のインスタンスを返す
+-- 型コンストラクタはただのシノニム（別名）で、値コンストラクタは引数を取りデータ型を返す関数ということがよくわかる
+data E l r = L l | R r deriving (Show)
+ghci> let e :: E Int String = R "Right"
+ghci> e
+R "Right"
+ghci> :t e
+e :: E Int String
+```
+
+### インスタンスの自動導出
+オブジェクト指向のクラスは、表現したいものを抽象化したものと考えることができる。（インスタンスはそれを具象化したもの）<br>
+Haskell のクラスの考え方は、まずデータ型を作り、それから「このデータには何ができるか」を考える。もしその型が、等価性をテストできるものだった場合は、`Eq` 型クラスのインスタンスにする。<br>
+Haskell では特定の型クラスのインスタンス宣言を自動導出できる。（Eq, Ord, Enum, Bounded, Show, Read）ちなみに、値コンストラクタの中の全てのフィールドが自動導出（deriving）に指定しているインスタンスでなければならない。<br>
+`Eq` を自動導出する場合は、順番に気をつける（値コンストラクタの前に位置する方が小さい値とみなされる）
+```haskell
+-- False の方が小さいとみなされる
+data Bool = False | True
+```
+
+### 型シノニム
+`[Char]` と `String` は同値で交換可能である。これは**型シノニム（型同義名）**を使って実装されている（らしい）。<br>
+型シノニムそのものは特に何もせず、ただある型に対して別の名前を与えている。<br>
+新しいデータ型宣言　　：`data`<br>
+既存の型をシノニム宣言：`type`<br>
+
+ある型に別名をつけて直感的に何を表しているのか分かりやすくする時に便利
+```haskell
+type String = [Char]
+
+-- 同じ
+ghci> a :: [Char] -> [Char]; a x = x ++ "----"
+ghci> b :: String -> String; b x = x ++ "==="
+
+ghci> let c :: [Char] = "CCC"
+ghci> let s :: String = "SSS"
+
+ghci> a c
+"CCC----"
+ghci> a s
+"SSS----"
+
+ghci> b c
+"CCC==="
+ghci> b s
+"SSS==="
+
+type A = String
+type B = Int
+type C = (String, Int)
+cFunc :: C -> A
+cFunc (a, b) = a
+
+ghci> let a :: A = "KKK"
+ghci> let b :: B = 100
+ghci> let c :: C = (a, b)
+ghci> cFunc c
+"KKK"
+
+-- 多相もいける
+type IntTuple v = (Int, v)
+ghci> let tuple :: IntTuple String = (1, "Aieeo")
+tuple :: IntTuple String
 ```

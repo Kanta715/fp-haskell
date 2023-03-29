@@ -6,7 +6,14 @@ module OriginalType(
   User(..),
   toTanaka,
   Age(..),
-  Person(..)
+  Person(..),
+  A,
+  B,
+  C,
+  cFunc,
+  IntTuple,
+  EitherT,
+  E(..)
 ) where
 
 data Name = LastAndFirst          String String |
@@ -32,3 +39,15 @@ data Person = Person {
   name :: Name,
   age  :: Age
 } deriving (Show)
+
+type A = String
+type B = Int
+type C = (String, Int)
+cFunc :: C -> A
+cFunc (a, b) = a
+
+type IntTuple v = (Int, v)
+
+data EitherT l r = Left l | Right r deriving (Show)
+
+data E l r = L l | R r deriving (Show)
