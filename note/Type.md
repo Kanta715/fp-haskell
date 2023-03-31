@@ -353,3 +353,39 @@ False
 ghci> haveInTree 10 numTree
 True
 ```
+
+### 型クラスを使ってインスタンスを作る
+構文：`instance {型クラス} {型} where`
+`Eq` 型クラスのインスタンスを作りたい場合、**最小完全定義**を定義する。<br>
+`Eq` の場合は `==` or `/=` のどちらかを実装する。
+```haskell
+data Supports = Soccer | Tennis | Baseball
+
+instance Eq Supports where
+  (==) Soccer Soccer     = True
+  (==) Tennis Tennis     = True
+  (==) Baseball Baseball = True
+  (==) _        _        = False
+
+ghci> Baseball == Baseball
+True
+ghci> Baseball == Soccer
+False
+
+-- 独自の真偽判定をしてくれる型クラスとかも作れる
+class YesNo a where
+  yesno :: a -> Bool
+
+instance YesNo Supports where
+  yesno Soccer   = False
+  yesno Tennis   = False
+  yesno Baseball = True
+
+ghci> yesno Baseball
+True
+ghci> yesno Soccer
+False
+ghci> yesno Tennis
+False
+ghci> yesno a
+```

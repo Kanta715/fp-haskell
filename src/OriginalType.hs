@@ -19,7 +19,11 @@ module OriginalType(
   Tree(..),
   singleton,
   treeInsert,
-  haveInTree
+  haveInTree,
+  Supports,
+  Supports(..),
+  YesNo(..),
+  YesNo
 ) where
 
 data Name = LastAndFirst          String String |
@@ -80,3 +84,25 @@ haveInTree a (Node v left right)
  | a == v = True
  | a  < v = haveInTree a left
  | a  > v = haveInTree a right
+
+data Supports = Soccer | Tennis | Baseball
+
+instance Eq Supports where
+  (==) Soccer Soccer     = True
+  (==) Tennis Tennis     = True
+  (==) Baseball Baseball = True
+  (==) _        _        = False
+
+class YesNo a where
+  yesno :: a -> Bool
+
+instance YesNo Supports where
+  yesno Soccer   = False
+  yesno Tennis   = False
+  yesno Baseball = True
+
+instance YesNo (MyList a) where
+  yesno Nil = False
+  yesno _   = True
+
+
