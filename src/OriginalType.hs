@@ -13,7 +13,13 @@ module OriginalType(
   cFunc,
   IntTuple,
   EitherT,
-  E(..)
+  E(..),
+  MyList(..),
+  Error,
+  Tree(..),
+  singleton,
+  treeInsert,
+  haveInTree
 ) where
 
 data Name = LastAndFirst          String String |
@@ -51,3 +57,26 @@ type IntTuple v = (Int, v)
 data EitherT l r = Left l | Right r deriving (Show)
 
 data E l r = L l | R r deriving (Show)
+
+data MyList a = Nil | List a (MyList a) deriving (Show)
+
+data Error = Error String deriving (Show)
+
+data Tree a = None | Node a (Tree a) (Tree a) deriving (Show)
+
+singleton :: a -> Tree a
+singleton a = Node a None None
+
+treeInsert :: (Ord a) => a -> Tree a -> Tree a
+treeInsert a None = singleton a
+treeInsert a (Node x left right)
+ | a == x = Node x left right
+ | a  < x = Node x (treeInsert a left) right
+ | a  > x = Node x left (treeInsert a right)
+
+haveInTree :: (Ord a) => a -> Tree a -> Bool
+haveInTree a None = False
+haveInTree a (Node v left right)
+ | a == v = True
+ | a  < v = haveInTree a left
+ | a  > v = haveInTree a right

@@ -310,3 +310,46 @@ type IntTuple v = (Int, v)
 ghci> let tuple :: IntTuple String = (1, "Aieeo")
 tuple :: IntTuple String
 ```
+
+### 再帰的なデータ構造
+```haskell
+data MyList a = Nil | List a (MyList a) deriving (Show)
+
+ghci> List 1 (List 3 (List 10 Nil))
+ghci> Nil
+
+-- 二分探索木
+data Tree a = None | Node a (Tree a) (Tree a) deriving (Show)
+
+ghci> let node :: Tree Int = Node 5 (Node 3 (Node 1 (Node 0 (None) (None)) (None)) (Node 4 (None) (None))) (None)
+ghci> node
+Node 5 (Node 3 (Node 1 (Node 0 None None) None) (Node 4 None None)) None
+
+singleton :: a -> Tree a
+singleton a = Node a None None
+
+treeInsert :: (Ord a) => a -> Tree a -> Tree a
+treeInsert a None = singleton a
+treeInsert a (Node x left right)
+ | a == x = Node x left right
+ | a  < x = Node x (treeInsert a left) right
+ | a  > x = Node x left (treeInsert a right)
+
+haveInTree :: (Ord a) => a -> Tree a -> Bool
+haveInTree a None = False
+haveInTree a (Node v left right)
+ | a == v = True
+ | a  < v = haveInTree a left
+ | a  > v = haveInTree a right
+
+ghci> let nums = [1,3,4,6,78,8,5,4,3,3,4,5,6,6,6,6,10]
+ghci> let numTree = foldr treeInsert None nums
+ghci> numTree
+Node 10 (Node 6 (Node 5 (Node 4 (Node 3 (Node 1 None None) None) None) None) (Node 8 None None)) (Node 78 None None)
+
+ghci> haveInTree 100 numTree
+False
+
+ghci> haveInTree 10 numTree
+True
+```
