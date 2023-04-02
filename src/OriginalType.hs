@@ -23,7 +23,8 @@ module OriginalType(
   Supports,
   Supports(..),
   YesNo(..),
-  YesNo
+  YesNo,
+  Functor
 ) where
 
 data Name = LastAndFirst          String String |
@@ -104,5 +105,9 @@ instance YesNo Supports where
 instance YesNo (MyList a) where
   yesno Nil = False
   yesno _   = True
+
+instance Functor (E a) where
+  fmap f (L a) = L a
+  fmap f (R a) = R (f a)
 
 

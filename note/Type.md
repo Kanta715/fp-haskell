@@ -389,3 +389,58 @@ ghci> yesno Tennis
 False
 ghci> yesno a
 ```
+
+#### Functor 型クラス
+Functor 型クラスは fmap を最小完全定義として持っている。（デフォルト実装がないため、Functor 型クラスのインスタンスを作りたい時は fmap を実装しなければならない）<br>
+`f` は具体型ではなく1つの引数をとる型コンストラクタになっている。<br>
+**a 型から b 型への関数** と **a 型に適用された Functor** を取り、**b 型に適用された Functor** を返す
+```haskell
+-- f a, f b を見てわかるように、f は1つの型引数を取る型コンストラクタ
+ghci> :t fmap
+fmap :: Functor f => (a -> b) -> f a -> f b
+
+-- E を Functor のインスタンスにしたい場合は、1つ型引数を適用したもの（L or R）として渡してやらなければならない 
+-- E は 2 つの型引数をとる型コンストラクタだということがわかる（Functor f の f は、1つの型引数を取る型コンストラクタ）
+instance Functor (E a) where
+  fmap f (L a) = L a
+  fmap f (R a) = R (f a)
+
+ghci> :k E
+E :: * -> * -> *
+-- Left, Right は 1つの型が適用された E である
+ghci> :t L
+L :: l -> E l r
+ghci> :t R
+R :: r -> E l r
+
+ghci> let l = Left "Left"
+ghci> let r = Right "Right"
+ghci> :t l
+l :: Either String b
+ghci> :t r
+r :: Either a String
+
+ghci>  baby :: String -> String; baby x = x ++ "__Baby__" ++ x
+ghci> fmap baby l
+Left "Left"
+ghci> fmap baby r
+Right "Right__Baby__Right"
+```
+
+### 型を司るもの、種類
+「種類」とは**型の型**を表す。* （スター）は具体型（型引数を取らない型）を表す記号。<br>
+`:t`: 値の型を調べる時に使う<br>
+`:k`: 型の種類を調べる時に使う
+```haskell
+-- 具体型
+ghci> :k Int
+Int :: *
+
+-- 具体型を取り、具体型を返す型コンストラクタ（Int -> Maybe Int）
+ghci> :k Maybe
+Maybe :: * -> *
+
+-- Maybe Int は具体型なことがわかる
+ghci> :k Maybe Int
+Maybe Int :: *
+```
