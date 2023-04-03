@@ -1,9 +1,10 @@
 module Main (main) where
 
-import Baby
+import Auth
 
 main :: IO ()
-main =
-  do
-    x <- getLine
-    printLine (baby x)
+main = do
+  putStrLn "Hello, what's your name?"
+  name <- getLine
+  putStrLn ("Hey! " ++ name ++ ", you rock!")
+  password
