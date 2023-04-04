@@ -37,7 +37,7 @@ library:
   source-dirs: src
 
 executables:
-  fp-haskell-exe:
+  result:
     main:                Main.hs
     source-dirs:         app
     ghc-options:

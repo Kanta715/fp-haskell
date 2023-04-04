@@ -1,10 +1,9 @@
 module Main (main) where
 
-import Auth
+import Data.Char
 
 main :: IO ()
 main = do
-  putStrLn "Hello, what's your name?"
-  name <- getLine
-  putStrLn ("Hey! " ++ name ++ ", you rock!")
-  password
+  contents <- getContents
+  putStrLn contents
+  putStrLn . map toUpper $ contents

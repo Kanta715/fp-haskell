@@ -43,7 +43,7 @@ library
       base >=4.7 && <5
   default-language: Haskell2010
 
-executable fp-haskell-exe
+executable result
   main-is: Main.hs
   other-modules:
       Paths_fp_haskell
