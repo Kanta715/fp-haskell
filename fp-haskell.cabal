@@ -29,6 +29,7 @@ library
       Baby
       BMI
       Curry
+      Func
       Lib
       List.List
       OriginalType
