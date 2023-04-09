@@ -1,17 +1,18 @@
 module Func(
-  Composite(..),
+  Func(..),
   plus10Com,
   plus10,
   toString
 ) where
 
-data Composite from to = Composite (from -> to)
+data Func from to = Func (from -> to)
 
-instance Functor (Composite from) where
-  fmap f (Composite g) = Composite (\x -> f (g x))
+instance Functor (Func from) where
+  -- . 関数と同じことをする
+  fmap f (Func g) = Func (\x -> f (g x))
 
-plus10Com :: Composite Int Int
-plus10Com = Composite plus10
+plus10Com :: Func Int Int
+plus10Com = Func plus10
 
 plus10 :: Int -> Int
 plus10 n = n + 10

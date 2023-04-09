@@ -46,13 +46,13 @@ fmap :: (a -> b) -> (r -> a) -> (r -> b)
 **独自の関数合成型**<br>
 `->` と同じように、Functor インスタンスにして `fmap` で関数合成を再現。
 ```haskell
-data Composite from to = Composite (from -> to)
+data Func from to = Func (from -> to)
 
-instance Functor (Composite from) where
-  fmap f (Composite g) = Composite (\x -> f (g x))
+instance Functor (Func from) where
+  fmap f (Func g) = Func (\x -> f (g x))
 
-plus10Com :: Composite Int Int
-plus10Com = Composite plus10
+plus10Com :: Func Int Int
+plus10Com = Func plus10
 
 plus10 :: Int -> Int
 plus10 n = n + 10
@@ -63,5 +63,20 @@ toString a = show a
 
 ghci> let c = fmap toString plus10Com
 ghci> :t c
-c :: Composite Int String
+c :: Func Int String
+
+-- Func Int String から 関数の部分を取り出す
+ghci> let Func f = c
+
+ghci> f 10
+"20"
+```
+
+`fmap` は、関数とファンクター値を取って、ファンクター値を返す2引数関数とも思えるが、関数を取って「ファンクター値を取ってファンクター値を返す関数」を返す関数だと思うこともできる。<br>
+関数 `a -> b` を取って、関数 `f a -> f b` を返す。こういう操作を関数の持ち上げ（lifting）という。<br>
+関数で `Functor` 値を写すこと = 関数を持ち上げてからファンクター値に適用
+```haskell
+ghci> let l = fmap toString
+ghci> :t l
+l :: (Functor f, Show a) => f a -> f String
 ```
